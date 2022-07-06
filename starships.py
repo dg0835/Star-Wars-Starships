@@ -97,11 +97,34 @@ def replace_pilots(starships: list):
     return starships
 
 
+def upload_data_to_mongodb(data):
+
+    # Upload all the starship data to the local MangoDB Database
+
+    collection = db["starships"]
+
+    for d in data:
+
+        inserted = collection.insert_one(d)
+
+
+def drop_collection():
+
+    # Drops the starships collection
+
+    collection = db["starships"]
+
+    collection.drop()
+
+
 starship_api_info = get_api_json(url)  # Pass in the url of the page that we wish to scrape from
 
 all_starships = store_starships(starship_api_info)  # Create a list containing all starships and their metadata
 
-pprint(replace_pilots(all_starships))  # Replace pilots with their IDs
+data_to_insert = replace_pilots(all_starships)  # Replace pilots with their IDs
+
+drop_collection()
+upload_data_to_mongodb(data_to_insert)
 
 
 
